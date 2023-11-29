@@ -1,0 +1,408 @@
+components:
+  schemas:
+    Body_search_users_users_users_search__post:
+      properties:
+        first_name:
+          title: First Name
+          type: string
+        last_name:
+          title: Last Name
+          type: string
+      title: Body_search_users_users_users_search__post
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+          type: array
+      title: HTTPValidationError
+      type: object
+    OrderCreate:
+      properties:
+        service_ids:
+          items:
+            type: integer
+          title: Service Ids
+          type: array
+        user_id:
+          title: User Id
+          type: integer
+      required:
+      - user_id
+      - service_ids
+      title: OrderCreate
+      type: object
+    OrderResponse:
+      properties:
+        date_created:
+          format: date-time
+          title: Date Created
+          type: string
+        id:
+          title: Id
+          type: integer
+        services:
+          items:
+            $ref: '#/components/schemas/ServiceInOrder'
+          title: Services
+          type: array
+        user_id:
+          title: User Id
+          type: integer
+      required:
+      - id
+      - user_id
+      - date_created
+      - services
+      title: OrderResponse
+      type: object
+    OrderServiceAdd:
+      properties:
+        service_ids:
+          items:
+            type: integer
+          title: Service Ids
+          type: array
+      required:
+      - service_ids
+      title: OrderServiceAdd
+      type: object
+    ServiceCreate:
+      properties:
+        cost:
+          title: Cost
+          type: number
+        description:
+          title: Description
+          type: string
+        name:
+          title: Name
+          type: string
+      required:
+      - name
+      - description
+      - cost
+      title: ServiceCreate
+      type: object
+    ServiceInOrder:
+      properties:
+        cost:
+          title: Cost
+          type: number
+        description:
+          title: Description
+          type: string
+        id:
+          title: Id
+          type: integer
+        name:
+          title: Name
+          type: string
+      required:
+      - id
+      - name
+      - description
+      - cost
+      title: ServiceInOrder
+      type: object
+    ServiceResponse:
+      properties:
+        cost:
+          title: Cost
+          type: number
+        description:
+          title: Description
+          type: string
+        id:
+          title: Id
+          type: integer
+        name:
+          title: Name
+          type: string
+      required:
+      - name
+      - id
+      - description
+      - cost
+      title: ServiceResponse
+      type: object
+    UserCreate:
+      properties:
+        email:
+          title: Email
+          type: string
+        first_name:
+          title: First Name
+          type: string
+        last_name:
+          title: Last Name
+          type: string
+        login:
+          title: Login
+          type: string
+      required:
+      - login
+      - first_name
+      - last_name
+      - email
+      title: UserCreate
+      type: object
+    UserResponse:
+      properties:
+        email:
+          title: Email
+          type: string
+        first_name:
+          title: First Name
+          type: string
+        id:
+          title: Id
+          type: integer
+        last_name:
+          title: Last Name
+          type: string
+        login:
+          title: Login
+          type: string
+      required:
+      - login
+      - id
+      - first_name
+      - last_name
+      - email
+      title: UserResponse
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          title: Location
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+      type: object
+info:
+  title: FastAPI
+  version: 0.1.0
+openapi: 3.1.0
+paths:
+  /orders/orders/:
+    post:
+      operationId: create_order_orders_orders__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Create Order
+      tags:
+      - orders
+  /orders/orders/{order_id}/add_service:
+    post:
+      operationId: add_service_to_order_orders_orders__order_id__add_service_post
+      parameters:
+      - in: path
+        name: order_id
+        required: true
+        schema:
+          title: Order Id
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderServiceAdd'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Add Service To Order
+      tags:
+      - orders
+  /orders/orders/{user_id}:
+    get:
+      operationId: get_user_orders_orders_orders__user_id__get
+      parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          title: User Id
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/OrderResponse'
+                title: Response Get User Orders Orders Orders  User Id  Get
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get User Orders
+      tags:
+      - orders
+  /services/services/:
+    get:
+      operationId: get_services_services_services__get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ServiceResponse'
+                title: Response Get Services Services Services  Get
+                type: array
+          description: Successful Response
+      summary: Get Services
+      tags:
+      - services
+    post:
+      operationId: create_service_services_services__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceCreate'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Create Service
+      tags:
+      - services
+  /users/users/:
+    post:
+      operationId: create_user_users_users__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Create User
+      tags:
+      - users
+  /users/users/search/:
+    post:
+      operationId: search_users_users_users_search__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/Body_search_users_users_users_search__post'
+              title: Body
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/UserResponse'
+                title: Response Search Users Users Users Search  Post
+                type: array
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Search Users
+      tags:
+      - users
+  /users/users/{login}:
+    get:
+      operationId: read_user_users_users__login__get
+      parameters:
+      - in: path
+        name: login
+        required: true
+        schema:
+          title: Login
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Read User
+      tags:
+      - users

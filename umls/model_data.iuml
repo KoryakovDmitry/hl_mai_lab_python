@@ -1,0 +1,34 @@
+@startuml
+
+class User {
+    - id: Integer
+    - login: String
+    - first_name: String
+    - last_name: String
+    - email: String
+}
+
+class Service {
+    - id: Integer
+    - name: String
+    - description: TEXT
+    - cost: DECIMAL
+}
+
+class Order {
+    - id: Integer
+    - user_id: Integer
+    - date_created: DateTime
+}
+
+class Order_Service {
+    - order_id: Integer
+    - service_id: Integer
+}
+
+User "1" -- "0..*" Order : has >
+Order_Service "0..*" -- "1" Order : >
+Order_Service "0..*" -- "1" Service : >
+Service "0..*" -- "0..*" Order : < services
+
+@enduml

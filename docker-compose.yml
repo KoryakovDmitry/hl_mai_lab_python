@@ -1,0 +1,73 @@
+version: '3'
+
+services:
+  mai-db-node-ex01:
+    build:
+      context: mariadb
+      dockerfile: Dockerfile
+    container_name: mai-db-node-ex01
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: archdb
+      MYSQL_USER: stud
+      MYSQL_PASSWORD: stud
+      MYSQL_ROOT_PASSWORD: '1'
+    command: >
+      --sql-mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+      --general-log=ON
+      --log-queries-not-using-indexes=ON
+    networks:
+      - arch-network
+    ports:
+      - 3360:3306
+    healthcheck:
+      test: "/usr/bin/mariadb --user=stud --password=stud --execute \"SHOW DATABASES;\""
+      interval: 15s
+      timeout: 1s
+      retries: 5
+    volumes:
+      - db-node-ex01-data:/var/lib/mysql
+
+  fastapi_backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    container_name: fastapi_backend
+    restart: unless-stopped
+    environment:
+      - DB_HOST=mai-db-node-ex01
+      - DB_PORT=3306
+      - DB_USER=stud
+      - DB_PASSWORD=stud
+      - DB_DATABASE=archdb
+    ports:
+      - "8000:8000"
+    networks:
+      - arch-network
+    depends_on:
+      mai-db-node-ex01:
+        condition: service_healthy
+
+  streamlit_app_frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    container_name: streamlit_app_frontend
+    restart: unless-stopped
+    environment:
+      - MARKET_SERVICE_HOST=fastapi_backend
+      - MARKET_SERVICE_PORT=8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      - fastapi_backend
+    networks:
+      - arch-network
+
+volumes:
+  db-node-ex01-data:
+
+networks:
+  arch-network:
+    driver: "bridge"
+    external: false
