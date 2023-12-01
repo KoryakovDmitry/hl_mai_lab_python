@@ -38,7 +38,25 @@ CREATE TABLE IF NOT EXISTS order_service (
 INSERT INTO users (login, first_name, last_name, email) VALUES
 ('john123', 'John', 'Doe', 'john@example.com'),
 ('jane567', 'Jane', 'Lopes', 'jane@example.com'),
-('mike789', 'Mike', 'Johnson', 'mike@example.com');
+('mike789', 'Mike', 'Johnson', 'mike@example.com'),
+('alex123', 'Alex', 'Taylor', 'alex@example.com'),
+('lisa789', 'Lisa', 'Moore', 'lisa@example.com'),
+('jacob456', 'Jacob', 'Jackson', 'jacob@example.com'),
+('grace234', 'Grace', 'Davis', 'grace@example.com'),
+('max891', 'Max', 'Martinez', 'max@example.com'),
+('olivia765', 'Olivia', 'Garcia', 'olivia@example.com'),
+('samuel321', 'Samuel', 'Rodriguez', 'samuel@example.com'),
+('chloe654', 'Chloe', 'Lee', 'chloe@example.com'),
+('ethan789', 'Ethan', 'Perez', 'ethan@example.com'),
+('hannah543', 'Hannah', 'Anderson', 'hannah@example.com'),
+('noah987', 'Noah', 'Thomas', 'noah@example.com'),
+('sophia321', 'Sophia', 'Taylor', 'sophia@example.com'),
+('aiden654', 'Aiden', 'Harris', 'aiden@example.com'),
+('abigail789', 'Abigail', 'Lopez', 'abigail@example.com'),
+('joshua432', 'Joshua', 'Clark', 'joshua@example.com'),
+('isabella987', 'Isabella', 'Lewis', 'isabella@example.com'),
+('william123', 'William', 'Robinson', 'william@example.com');
+
 
 -- Inserting services as per the logs
 INSERT INTO services (name, description, cost) VALUES
