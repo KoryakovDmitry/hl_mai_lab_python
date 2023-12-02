@@ -1,4 +1,5 @@
 # import os
+import json
 import unittest
 import logging
 import requests
@@ -31,26 +32,8 @@ class TestFastAPIEndpoints(unittest.TestCase):
     #         conn.execute(text(f"DELETE FROM {table_name};"))
 
     def test_1_create_users(self):
-        user_data = [
-            {
-                "login": "john123",
-                "first_name": "John",
-                "last_name": "Doe",
-                "email": "john@example.com",
-            },
-            {
-                "login": "jane567",
-                "first_name": "Jane",
-                "last_name": "Lopes",
-                "email": "jane@example.com",
-            },
-            {
-                "login": "mike789",
-                "first_name": "Mike",
-                "last_name": "Johnson",
-                "email": "mike@example.com",
-            },
-        ]
+        with open("data/users.json", "r") as f:
+            user_data = json.load(f)
 
         for user in user_data:
             response = requests.post(f"{self.BASE_URL}/users/users/", json=user)
@@ -188,6 +171,31 @@ class TestFastAPIEndpoints(unittest.TestCase):
         response = requests.get(url)
         logging.info(
             f"Getting orders for user_id {user_id}: status {response.status_code}, response {response.json()}"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(isinstance(response.json(), list))
+
+    def test_9_read_user(self):
+        login = "sophia321"
+        url = f"{self.BASE_URL}/users/users/{login}"
+        response = requests.get(url)
+        logging.info(
+            f"Reading user {login}: status {response.status_code}, response {response.json()}"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["login"], login)
+
+    def test_X_search_users(self):
+        url = f"{self.BASE_URL}/users/users/search/"
+        data = {
+            "first_name": "^J.*",  # Regex pattern for first names starting with 'J'
+            "last_name": ".*o.*",  # Regex pattern for last names containing 'o'
+        }
+        response = requests.post(url, json=data)
+        logging.info(
+            f"Searching users: status {response.status_code}, response {response.json()}"
         )
 
         self.assertEqual(response.status_code, 200)

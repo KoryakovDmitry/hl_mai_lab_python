@@ -13,3 +13,5 @@ COPY mysql.conf.d/ /etc/mysql/mysql.conf.d/
 RUN touch -a /var/log/mysql/error.log && chown mysql:adm /var/log/mysql/error.log
 RUN touch -a /var/log/mysql/general.log && chown mysql:adm /var/log/mysql/general.log
 RUN touch -a /var/log/mysql/slow.log && chown mysql:adm /var/log/mysql/slow.log
+
+COPY db-node-01/init_db.sql /docker-entrypoint-initdb.d/

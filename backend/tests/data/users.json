@@ -1,0 +1,122 @@
+[
+    {
+        "login": "john123",
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john@example.com"
+    },
+    {
+        "login": "jane567",
+        "first_name": "Jane",
+        "last_name": "Lopes",
+        "email": "jane@example.com"
+    },
+    {
+        "login": "mike789",
+        "first_name": "Mike",
+        "last_name": "Johnson",
+        "email": "mike@example.com"
+    },
+    {
+        "login": "alex123",
+        "first_name": "Alex",
+        "last_name": "Taylor",
+        "email": "alex@example.com"
+    },
+    {
+        "login": "lisa789",
+        "first_name": "Lisa",
+        "last_name": "Moore",
+        "email": "lisa@example.com"
+    },
+    {
+        "login": "jacob456",
+        "first_name": "Jacob",
+        "last_name": "Jackson",
+        "email": "jacob@example.com"
+    },
+    {
+        "login": "grace234",
+        "first_name": "Grace",
+        "last_name": "Davis",
+        "email": "grace@example.com"
+    },
+    {
+        "login": "max891",
+        "first_name": "Max",
+        "last_name": "Martinez",
+        "email": "max@example.com"
+    },
+    {
+        "login": "olivia765",
+        "first_name": "Olivia",
+        "last_name": "Garcia",
+        "email": "olivia@example.com"
+    },
+    {
+        "login": "samuel321",
+        "first_name": "Samuel",
+        "last_name": "Rodriguez",
+        "email": "samuel@example.com"
+    },
+    {
+        "login": "chloe654",
+        "first_name": "Chloe",
+        "last_name": "Lee",
+        "email": "chloe@example.com"
+    },
+    {
+        "login": "ethan789",
+        "first_name": "Ethan",
+        "last_name": "Perez",
+        "email": "ethan@example.com"
+    },
+    {
+        "login": "hannah543",
+        "first_name": "Hannah",
+        "last_name": "Anderson",
+        "email": "hannah@example.com"
+    },
+    {
+        "login": "noah987",
+        "first_name": "Noah",
+        "last_name": "Thomas",
+        "email": "noah@example.com"
+    },
+    {
+        "login": "sophia321",
+        "first_name": "Sophia",
+        "last_name": "Taylor",
+        "email": "sophia@example.com"
+    },
+    {
+        "login": "aiden654",
+        "first_name": "Aiden",
+        "last_name": "Harris",
+        "email": "aiden@example.com"
+    },
+    {
+        "login": "abigail789",
+        "first_name": "Abigail",
+        "last_name": "Lopez",
+        "email": "abigail@example.com"
+    },
+    {
+        "login": "joshua432",
+        "first_name": "Joshua",
+        "last_name": "Clark",
+        "email": "joshua@example.com"
+    },
+    {
+        "login": "isabella987",
+        "first_name": "Isabella",
+        "last_name": "Lewis",
+        "email": "isabella@example.com"
+    },
+    {
+        "login": "william123",
+        "first_name": "William",
+        "last_name": "Robinson",
+        "email": "william@example.com"
+    }
+]

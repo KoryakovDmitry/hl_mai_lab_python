@@ -1,32 +1,65 @@
-version: '3'
+version: '3.3'
 
 services:
-  mai-db-node-ex01:
+  db-node-1:
     build:
       context: mariadb
-      dockerfile: Dockerfile
-    container_name: mai-db-node-ex01
+      dockerfile: db-node-01/Dockerfile
+    container_name: db-node-1
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: archdb
       MYSQL_USER: stud
       MYSQL_PASSWORD: stud
       MYSQL_ROOT_PASSWORD: '1'
-    command: >
-      --sql-mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
-      --general-log=ON
-      --log-queries-not-using-indexes=ON
+    # command: >
+    #   --sql-mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+    #   --general-log=ON
+    #   --log-queries-not-using-indexes=ON
     networks:
       - arch-network
     ports:
       - 3360:3306
-    healthcheck:
-      test: "/usr/bin/mariadb --user=stud --password=stud --execute \"SHOW DATABASES;\""
-      interval: 15s
-      timeout: 1s
-      retries: 5
     volumes:
-      - db-node-ex01-data:/var/lib/mysql
+      - db-node-1-data:/var/lib/mysql
+
+  db-node-2:
+    build:
+      context: mariadb
+      dockerfile: db-node-02/Dockerfile
+    container_name: db-node-2
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: archdb
+      MYSQL_USER: stud
+      MYSQL_PASSWORD: stud
+      MYSQL_ROOT_PASSWORD: '1'
+    networks:
+      - arch-network
+    ports:
+      - 3361:3306
+    volumes:
+      - db-node-2-data:/var/lib/mysql
+
+  proxysql:
+    image: proxysql/proxysql:2.0.6
+    command: >
+      --initial
+    volumes:
+    - "./proxysql/proxysql.cnf:/etc/proxysql.cnf"
+    - proxysql-data:/var/lib/proxysql
+#    healthcheck:
+#      test: "/usr/bin/mysql --user=stud --password=stud --execute \"SHOW DATABASES;\""
+#      timeout: 20s
+#      retries: 5
+    networks:
+      - arch-network
+    ports:
+    - "6033:6033"
+    - "6032:6032"
+    depends_on:
+      - db-node-1
+      - db-node-2
 
   fastapi_backend:
     build:
@@ -35,8 +68,8 @@ services:
     container_name: fastapi_backend
     restart: unless-stopped
     environment:
-      - DB_HOST=mai-db-node-ex01
-      - DB_PORT=3306
+      - DB_HOST=proxysql
+      - DB_PORT=6033
       - DB_USER=stud
       - DB_PASSWORD=stud
       - DB_DATABASE=archdb
@@ -45,8 +78,8 @@ services:
     networks:
       - arch-network
     depends_on:
-      mai-db-node-ex01:
-        condition: service_healthy
+      - proxysql
+#        condition: service_healthy
 
   streamlit_app_frontend:
     build:
@@ -65,7 +98,9 @@ services:
       - arch-network
 
 volumes:
-  db-node-ex01-data:
+  db-node-1-data:
+  db-node-2-data:
+  proxysql-data:
 
 networks:
   arch-network:
