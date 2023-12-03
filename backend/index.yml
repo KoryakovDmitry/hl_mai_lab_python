@@ -329,6 +329,14 @@ paths:
   /users/users/:
     post:
       operationId: create_user_users_users__post
+      parameters:
+      - in: query
+        name: no_cache
+        required: false
+        schema:
+          default: false
+          title: No Cache
+          type: boolean
       requestBody:
         content:
           application/json:
@@ -354,6 +362,14 @@ paths:
   /users/users/search/:
     post:
       operationId: search_users_users_users_search__post
+      parameters:
+      - in: query
+        name: no_cache
+        required: false
+        schema:
+          default: false
+          title: No Cache
+          type: boolean
       requestBody:
         content:
           application/json:
@@ -390,6 +406,13 @@ paths:
         schema:
           title: Login
           type: string
+      - in: query
+        name: no_cache
+        required: false
+        schema:
+          default: false
+          title: No Cache
+          type: boolean
       responses:
         '200':
           content:
