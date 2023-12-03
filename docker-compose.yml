@@ -73,12 +73,18 @@ services:
       - DB_USER=stud
       - DB_PASSWORD=stud
       - DB_DATABASE=archdb
+      - CACHE_HOST=cache
+      - CACHE_POST=6379
+      - CACHE_EXPIRATION=60
     ports:
       - "8000:8000"
     networks:
       - arch-network
     depends_on:
       - proxysql
+      - cache
+      - db-node-1
+      - db-node-2
 #        condition: service_healthy
 
   streamlit_app_frontend:
@@ -97,10 +103,22 @@ services:
     networks:
       - arch-network
 
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning
+    networks:
+      - arch-network
+    volumes:
+      - cache:/data
+
 volumes:
   db-node-1-data:
   db-node-2-data:
   proxysql-data:
+  cache:
 
 networks:
   arch-network:
