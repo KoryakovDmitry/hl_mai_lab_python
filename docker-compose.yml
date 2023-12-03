@@ -75,7 +75,7 @@ services:
       - DB_DATABASE=archdb
       - CACHE_HOST=cache
       - CACHE_POST=6379
-      - CACHE_EXPIRATION=60
+      - CACHE_EXPIRATION=3600
     ports:
       - "8000:8000"
     networks:
