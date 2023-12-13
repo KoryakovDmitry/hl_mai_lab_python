@@ -17,5 +17,5 @@ EXPOSE 8501
 # Define environment variable
 ENV NAME World
 
-# Run app.py when the container launches
+# Run writer_app.py when the container launches
 CMD ["streamlit", "run", "streamlit_app.py", "--server.address", "0.0.0.0", "--server.port", "8501"]

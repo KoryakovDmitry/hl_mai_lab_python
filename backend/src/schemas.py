@@ -15,7 +15,7 @@ class UserCreate(UserBase):
 
 
 class UserResponse(UserBase):
-    id: int
+    # id: int
     first_name: str
     last_name: str
     email: str

@@ -1,8 +1,10 @@
 import json
 import os
-import random
+
+# import random
 
 from fastapi import APIRouter, Depends, HTTPException, Body
+from kafka import KafkaProducer
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from ..database import get_db, redis_client
@@ -29,10 +31,24 @@ SHARD_IDS = [0, 1]
 # Cache expiration time in seconds (e.g., 1 hour)
 CACHE_EXPIRATION = os.getenv("CACHE_EXPIRATION", 3600)
 
+# Kafka configuration
+KAFKA_HOST = os.getenv("KAFKA_HOST", "localhost")
+KAFKA_PORT = os.getenv("KAFKA_PORT", "9092")
+KAFKA_BROKER_URL = f"{KAFKA_HOST}:{KAFKA_PORT}"
+KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "event_server")
 
-def determine_shard_id_for_new_user():
-    # UNIFORM DISTRIBUTION FOR EACH SHARD, the uniform probability of each node
-    return random.choice(SHARD_IDS)
+# Create Kafka producer instance using kafka-python
+kafka_producer = KafkaProducer(
+    bootstrap_servers=KAFKA_BROKER_URL,
+    value_serializer=lambda v: json.dumps(v).encode("utf-8"),
+)
+
+
+def delivery_report(err, msg):
+    if err is not None:
+        logger.error("Message delivery failed: {}".format(err))
+    else:
+        logger.info("Message delivered to {} [{}]".format(msg.topic(), msg.partition()))
 
 
 def cache_user_data(cache_name, user_data):
@@ -42,6 +58,16 @@ def cache_user_data(cache_name, user_data):
 def get_cached_user_data(cache_name):
     cached_user_data = redis_client.get(cache_name)
     return json.loads(cached_user_data) if cached_user_data else None
+
+
+def on_send_success(record_metadata):
+    logger.info(
+        f"Message delivered to {record_metadata.topic} [{record_metadata.partition}]"
+    )
+
+
+def on_send_error(excp):
+    logger.error("I am an errback", exc_info=excp)
 
 
 @router.post("/users/", response_model=UserResponse)
@@ -64,17 +90,24 @@ def create_user(
         )
         raise HTTPException(status_code=400, detail="Login already registered")
 
-    shard_id = determine_shard_id_for_new_user()
+    # Instead of inserting into DB, send to Kafka
+    user_data = {
+        "login": user_create.login,
+        "first_name": user_create.first_name,
+        "last_name": user_create.last_name,
+        "email": user_create.email,
+    }
 
-    # Inserting new user data into the database
-    insert_query = f"INSERT INTO users (login, first_name, last_name, email) VALUES ('{user_create.login}', '{user_create.first_name}', '{user_create.last_name}', '{user_create.email}') RETURNING *  -- sharding:{shard_id}"
-    new_user = db.execute(text(insert_query)).fetchone()
-    db.commit()  # Commit the transaction
+    kafka_producer.send(
+        KAFKA_TOPIC, key=user_create.login.encode("utf-8"), value=user_data
+    ).add_callback(on_send_success).add_errback(on_send_error)
 
-    if not no_cache:
-        cache_user_data(user_create.login, dict(new_user._mapping))
-        logger.info("User created and cached with login: %s", user_create.login)
-    return new_user
+    kafka_producer.flush()
+
+    # if not no_cache:
+    #     cache_user_data(user_create.login, dict(new_user._mapping))
+    #     logger.info("User created and cached with login: %s", user_create.login)
+    return user_create
 
 
 @router.get("/users/{login}", response_model=UserResponse)
